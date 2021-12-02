@@ -26,20 +26,20 @@ install:          ## Install the project in dev mode.
 
 .PHONY: fmt
 fmt:              ## Format code using black & isort.
-	$(ENV_PREFIX)isort project_name/
-	$(ENV_PREFIX)black -l 79 project_name/
+	$(ENV_PREFIX)isort filesproxy_service/
+	$(ENV_PREFIX)black -l 79 filesproxy_service/
 	$(ENV_PREFIX)black -l 79 tests/
 
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
-	$(ENV_PREFIX)flake8 project_name/
-	$(ENV_PREFIX)black -l 79 --check project_name/
+	$(ENV_PREFIX)flake8 filesproxy_service/
+	$(ENV_PREFIX)black -l 79 --check filesproxy_service/
 	$(ENV_PREFIX)black -l 79 --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports project_name/
+	$(ENV_PREFIX)mypy --ignore-missing-imports filesproxy_service/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
-	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 tests/
+	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=filesproxy_service -l --tb=short --maxfail=1 tests/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 
@@ -80,9 +80,9 @@ release:          ## Create a new tag for release.
 	@read -p "Version? (provide the next x.y.z semver) : " TAG
 	@echo "creating git tag : $${TAG}"
 	@git tag $${TAG}
-	@echo "$${TAG}" > project_name/VERSION
+	@echo "$${TAG}" > filesproxy_service/VERSION
 	@$(ENV_PREFIX)gitchangelog > HISTORY.md
-	@git add project_name/VERSION HISTORY.md
+	@git add filesproxy_service/VERSION HISTORY.md
 	@git commit -m "release: version $${TAG} 🚀"
 	@git push -u origin HEAD --tags
 	@echo "Github Actions will detect the new tag and release the new version."
@@ -101,7 +101,7 @@ switch-to-poetry: ## Switch to poetry package manager.
 	@poetry init --no-interaction --name=a_flask_test --author=rochacbruno
 	@echo "" >> pyproject.toml
 	@echo "[tool.poetry.scripts]" >> pyproject.toml
-	@echo "project_name = 'project_name.__main__:main'" >> pyproject.toml
+	@echo "filesproxy_service = 'filesproxy_service.__main__:main'" >> pyproject.toml
 	@cat requirements.txt | while read in; do poetry add --no-interaction "$${in}"; done
 	@cat requirements-test.txt | while read in; do poetry add --no-interaction "$${in}" --dev; done
 	@poetry install --no-interaction
@@ -109,7 +109,7 @@ switch-to-poetry: ## Switch to poetry package manager.
 	@mv requirements* .github/backup
 	@mv setup.py .github/backup
 	@echo "You have switched to https://python-poetry.org/ package manager."
-	@echo "Please run 'poetry shell' or 'poetry run project_name'"
+	@echo "Please run 'poetry shell' or 'poetry run filesproxy_service'"
 
 .PHONY: init
 init:             ## Initialize the project based on an application template.
